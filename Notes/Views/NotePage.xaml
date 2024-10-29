@@ -15,13 +15,22 @@
                 Text="{Binding Text}"
                 HeightRequest="100" />
 
-        <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
             <Button Text="Save"
                     Command="{Binding SaveCommand}" />
 
             <Button Grid.Column="1"
                     Text="Delete"
                     Command="{Binding DeleteCommand}" />
+
+            <HorizontalStackLayout Grid.Column="2"
+                                   VerticalOptions="Center" 
+                                   HorizontalOptions="Center">
+                <CheckBox IsChecked="{Binding Strikethrough}" />
+                <Label Text="Strike"
+                       VerticalOptions="Center"
+                       Margin="5,0,0,0" />
+            </HorizontalStackLayout>
         </Grid>
     </VerticalStackLayout>
 </ContentPage>

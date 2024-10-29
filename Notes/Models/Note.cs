@@ -1,13 +1,23 @@
-﻿namespace Notes.Models;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace Notes.Models;
 
 internal class Note
 {
+    [JsonIgnore]
     public string Filename { get; set; } = $"{Path.GetRandomFileName()}.notes.txt";
+
     public string Text { get; set; } = string.Empty;
     public DateTime Date { get; set; }
+    public bool Strikethrough { get; set; } = false;
 
-    public void Save() =>
-        File.WriteAllText(Path.Combine(FileSystem.AppDataDirectory, Filename), Text);
+    public void Save()
+    {
+        var jsonContent = JsonSerializer.Serialize<Note>(this);
+        File.WriteAllText(Path.Combine(FileSystem.AppDataDirectory, Filename), jsonContent);
+    }
+        
 
     public void Delete() =>
         File.Delete(Path.Combine(FileSystem.AppDataDirectory, Filename));
@@ -19,13 +29,12 @@ internal class Note
         if (!File.Exists(filename))
             throw new FileNotFoundException("Unable to find file on local storage.", filename);
 
-        return
-            new()
-            {
-                Filename = Path.GetFileName(filename),
-                Text = File.ReadAllText(filename),
-                Date = File.GetLastWriteTime(filename)
-            };
+        var fileText = File.ReadAllText(filename);
+        var note = JsonSerializer.Deserialize<Note>(fileText) ??
+            throw new NullReferenceException("Failed to deserialise file json.");
+        note.Filename = Path.GetFileName(filename);
+
+        return note;
     }
 
     public static IEnumerable<Note> LoadAll()

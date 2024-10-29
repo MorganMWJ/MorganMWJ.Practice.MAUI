@@ -36,6 +36,20 @@ internal class NoteViewModel : ObservableObject, IQueryAttributable
         }
     }
 
+    public bool Strikethrough
+    {
+        get => _note.Strikethrough;
+        set
+        {
+            if (_note.Strikethrough != value)
+            {
+                _note.Strikethrough = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+
     public DateTime Date => _note.Date;
 
     /// <summary>
@@ -113,5 +127,6 @@ internal class NoteViewModel : ObservableObject, IQueryAttributable
     {
         OnPropertyChanged(nameof(Text));
         OnPropertyChanged(nameof(Date));
+        OnPropertyChanged(nameof(Strikethrough));
     }
 }
